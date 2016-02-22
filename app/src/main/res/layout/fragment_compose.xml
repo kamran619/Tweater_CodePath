@@ -1,0 +1,79 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.ComposeTweetFragment">
+
+    <ImageView
+
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/ivComposeAvatar"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kamran Pirwani"
+        android:id="@+id/tvComposeName"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_alignTop="@+id/ivComposeAvatar"
+        android:layout_toRightOf="@+id/ivComposeAvatar"
+        android:layout_toEndOf="@+id/ivComposeAvatar"
+        android:layout_marginLeft="5dp"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:textColor="#FFFFFF" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="\@Kamran Pirwani"
+        android:id="@+id/tvComposeHandle"
+        android:layout_gravity="center_horizontal|top"
+        android:textSize="16dp"
+        android:layout_below="@+id/tvComposeName"
+        android:layout_alignLeft="@+id/tvComposeName"
+        android:layout_alignStart="@+id/tvComposeName"
+        android:textColor="@android:color/darker_gray" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:id="@+id/etBody"
+        android:layout_below="@+id/ivComposeAvatar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@+id/ivComposeAvatar"
+        android:layout_toEndOf="@+id/ivComposeAvatar" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="140 characters remaining"
+        android:id="@+id/tvRemaining"
+        android:textSize="14sp"
+        android:textColor="#B6B6B6"
+        android:layout_alignRight="@+id/etBody"
+        android:layout_alignEnd="@+id/btnTweet"
+        android:layout_alignLeft="@+id/etBody"
+        android:layout_alignStart="@+id/etBody"
+        android:layout_below="@+id/etBody" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Tweet"
+        android:id="@+id/btnTweet"
+        android:textColor="#009688"
+        android:background="@drawable/border"
+        android:layout_below="@+id/tvRemaining"
+        android:layout_alignRight="@+id/etBody"
+        android:layout_alignEnd="@+id/etBody"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
+</RelativeLayout>

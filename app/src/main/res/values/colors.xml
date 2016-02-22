@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="divider" type="color">#00796B</item>
+    <item name="hastag" type="color">#FFFFFF</item>
+
+</resources>

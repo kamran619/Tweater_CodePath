@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@android:color/black">
+    >
+
+    <RelativeLayout
+        android:id="@+id/headerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/ivAvatar"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kamran Pirwani"
+            android:id="@+id/tvName"
+            android:layout_alignTop="@+id/ivAvatar"
+            android:layout_toRightOf="@+id/ivAvatar"
+            android:layout_toEndOf="@+id/ivAvatar"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\@kamranpirwanil"
+            android:id="@+id/tvHandle"
+            android:layout_alignLeft="@+id/tvName"
+            android:layout_alignStart="@+id/tvBody"
+            android:layout_below="@+id/tvName"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp"
+            android:textColor="#b2dfdb" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12h"
+            android:id="@+id/tvTime"
+            android:layout_alignRight="@+id/tvBody"
+            android:textColor="#00796b"
+            android:layout_alignParentEnd="false"
+            android:layout_marginRight="12dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/tvName"
+            android:layout_toEndOf="@+id/tvHandle"
+            android:textIsSelectable="false"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:layout_toRightOf="@+id/tvName"
+            android:layout_above="@+id/tvHandle"
+            android:gravity="end" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I don&apos;t speak ill of nobody. Even you garbage MGs who cose me my back to back gold"
+            android:id="@+id/tvBody"
+            android:autoLink="all"
+            android:textSize="16dp"
+            android:textColor="@android:color/darker_gray"
+            android:layout_below="@+id/ivAvatar"
+            android:layout_alignLeft="@+id/ivAvatar"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/contentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/headerContainer"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:background="@android:color/black">
+        <ImageView
+            android:id="@+id/ivContent"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:visibility="gone"
+            android:scaleType="fitCenter"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/footerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contentContainer"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignLeft="@+id/contentContainer"
+        android:layout_alignStart="@+id/contentContainer"
+        android:paddingBottom="10dp"
+        android:background="@android:color/black">
+
+        <ImageButton
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnReply"
+            android:background="@drawable/border"
+            android:text="Reply"
+            android:src="@drawable/reply"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp" />
+
+        <ImageButton
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:text="24"
+            android:id="@+id/btnRetweet"
+            android:background="@drawable/border"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/retweet"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
+
+        <ImageButton
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:id="@+id/btnFavorite"
+            android:drawableLeft="@drawable/unfilled_heart"
+            android:background="@drawable/border"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/unfilled_heart"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
+    </RelativeLayout>
+
+</RelativeLayout>
