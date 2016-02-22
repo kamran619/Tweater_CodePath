@@ -49,11 +49,12 @@ The following **additional** features are implemented:
 - [x] Use Gson to store UserData into shared preferences
 - [x] Add a layer of abstraction on top our TwitterClient to hide some ugliness
 - [x] Add a way to use mock data from save json files so I wouldn't hit the rate limiter
+- [x] Allow the user to unfavorite a tweet
 
 ## Video Walkthrough 
 
 ### Basic user flow
-![Alt text](/demos/twitter_normalflow2.gif)
+![Alt text](/demos/twitter_demo_timeline.gif)
 
 ### Too Many characters
 ![Alt text](/demos/twitter_length.gif)
