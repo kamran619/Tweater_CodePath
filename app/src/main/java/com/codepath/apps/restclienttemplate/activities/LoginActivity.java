@@ -63,6 +63,7 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 	// Uses the client to initiate OAuth authorization
 	// This should be tied to a button used to login
 	public void loginToRest(View view) {
+		getClient().setRequestIntentFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		getClient().connect();
 	}
 
