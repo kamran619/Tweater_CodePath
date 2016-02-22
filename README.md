@@ -54,7 +54,7 @@ The following **additional** features are implemented:
 ## Video Walkthrough 
 
 ### Basic user flow
-![Alt text](/demos/twitter_demo_timeline.gif)
+![Alt text](/demos/twitter_normalflow2.gif)
 
 ### Too Many characters
 ![Alt text](/demos/twitter_length.gif)
