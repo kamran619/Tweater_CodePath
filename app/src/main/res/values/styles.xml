@@ -6,15 +6,15 @@
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
         -->
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
     </style>
 
     <style name="MyActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:background">@android:color/background_light</item>
+        <item name="android:background">@color/divider</item>
     </style>
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

@@ -86,7 +86,7 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        TweetModel tweetModel = tweets.get(position);
+        final TweetModel tweetModel = tweets.get(position);
 
         Glide.with(context).load(tweetModel.getUser().getProfileImageUrl()).into(holder.ivAvatar);
         holder.tvName.setText(tweetModel.getUser().getName());
@@ -113,6 +113,13 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
         } else {
             holder.btnRetweet.setImageDrawable(context.getResources().getDrawable(R.drawable.retweet));
         }
+
+        holder.ivAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.profile(tweetModel);
+            }
+        });
         setupButtons(tweetModel, holder);
     }
 
@@ -214,6 +221,7 @@ public class TweetsArrayAdapter extends RecyclerView.Adapter<TweetsArrayAdapter.
     }
 
     public interface ITweetActionListener {
+        void profile(TweetModel tweetModel);
         void retweet(TweetModel tweetModel);
         void reply(TweetModel tweetModel);
         void favorite(TweetModel tweetModel);

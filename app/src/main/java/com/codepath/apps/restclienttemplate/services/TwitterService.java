@@ -21,7 +21,11 @@ public class TwitterService {
     private static TwitterService sharedInstance;
 
     private static final long FETCH_ALL = 1;
+    private static final long CURRENT_USER_TIMELINE = 0;
+
     private long mLastTweetIdFetched = 0;
+    private long mLastMentionIdFetched = 0;
+    private long mLastUserTimelineTweetIdFetched = 0;
 
     private TwitterService() {
         mClient = TwitterApplication.getRestClient();
@@ -56,6 +60,51 @@ public class TwitterService {
         });
     }
 
+    public void getMentionsTimeline(boolean fetchStartingFromLastId, final IOnMentionsTimelineReceived callback) {
+        long sinceId = (fetchStartingFromLastId == true) ? mLastMentionIdFetched : FETCH_ALL;
+        mClient.getMentionsTimeline(sinceId, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
+                ArrayList<TweetModel> tweets = TweetModel.fromJSONArray(jsonArray);
+                mLastMentionIdFetched = tweets.get(tweets.size() - 1).getUid();
+                callback.onSuccess(tweets);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                callback.onFailure(errorResponse.toString());
+            }
+        });
+    }
+
+    public void getCurrentUserTimeline(boolean fetchFromLastId, final IOnUserTimelineReceived callback) {
+        getUserTimeline(CURRENT_USER_TIMELINE, fetchFromLastId, callback);
+    }
+
+    public void getUserTimeline(long userId, boolean fetchStartingFromLastId, final IOnUserTimelineReceived callback) {
+        long sinceId = FETCH_ALL;
+        if (fetchStartingFromLastId == false) {
+            mLastUserTimelineTweetIdFetched = 1;
+        } else {
+            sinceId = mLastUserTimelineTweetIdFetched;
+        }
+        mClient.getUserTimeline(userId, sinceId, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
+                ArrayList<TweetModel> tweets = TweetModel.fromJSONArray(jsonArray);
+                mLastUserTimelineTweetIdFetched = tweets.get(tweets.size() - 1).getUid();
+                callback.onSuccess(tweets);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                callback.onFailure(errorResponse.toString());
+            }
+        });
+    }
+
     public void getCurrentUser(final IOnCurrentUserReceived callback) {
         mClient.getCurrentUser(new JsonHttpResponseHandler() {
             @Override
@@ -67,6 +116,21 @@ public class TwitterService {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 callback.onFailure(errorResponse.toString());
+            }
+        });
+    }
+
+    public void getUser(long userId, final IOnUserReceived callback) {
+        mClient.getUser(userId, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject jsonObject) {
+                UserModel user = UserModel.fromJSON(jsonObject);
+                callback.onSuccess(user);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorObject) {
+                callback.onFailure(errorObject.toString());
             }
         });
     }
@@ -138,7 +202,22 @@ public class TwitterService {
         public void onFailure(String error);
     }
 
+    public interface IOnUserReceived {
+        public void onSuccess(UserModel user);
+        public void onFailure(String error);
+    }
+
     public interface IOnHomeTimelineReceived {
+        public void onSuccess(ArrayList<TweetModel> tweets);
+        public void onFailure(String error);
+    }
+
+    public interface IOnMentionsTimelineReceived {
+        public void onSuccess(ArrayList<TweetModel> tweets);
+        public void onFailure(String error);
+    }
+
+    public interface IOnUserTimelineReceived {
         public void onSuccess(ArrayList<TweetModel> tweets);
         public void onFailure(String error);
     }

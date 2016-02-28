@@ -2,14 +2,13 @@ package com.codepath.apps.restclienttemplate.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.models.UserModel;
 import com.codepath.apps.restclienttemplate.network.TwitterClient;
 import com.codepath.apps.restclienttemplate.services.TwitterService;
-import com.codepath.apps.restclienttemplate.models.UserModel;
 import com.codepath.apps.restclienttemplate.utils.SharedPrefsHelper;
 import com.codepath.oauth.OAuthLoginActionBarActivity;
 
@@ -23,14 +22,7 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 	}
 
 	private void setupMocking() {
-		TwitterService.getInstance().setMocking(false);
-	}
-
-	// Inflate the menu; this adds items to the action bar if it is present.
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.login, menu);
-		return true;
+		TwitterService.getInstance().setMocking(true);
 	}
 
 	// OAuth authenticated successfully, launch primary authenticated activity

@@ -24,6 +24,8 @@ repositories {
 }
 
 
+
+
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
     // Picasso for remote image loading
@@ -39,4 +41,5 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
     compile 'com.ocpsoft:ocpsoft-pretty-time:1.0.6'
     compile 'com.google.code.gson:gson:2.5'
+    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
 }

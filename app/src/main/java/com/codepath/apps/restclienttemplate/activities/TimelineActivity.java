@@ -1,184 +1,104 @@
 package com.codepath.apps.restclienttemplate.activities;
 
-import android.app.FragmentTransaction;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.adapters.TweetsArrayAdapter;
-import com.codepath.apps.restclienttemplate.services.TwitterService;
-import com.codepath.apps.restclienttemplate.fragments.ComposeTweetFragment;
-import com.codepath.apps.restclienttemplate.models.TweetModel;
-import com.codepath.apps.restclienttemplate.uiTweaks.SimpleDividerItemDecoration;
-import com.codepath.apps.restclienttemplate.utils.EndlessRecyclerViewScrollListener;
-import com.codepath.apps.restclienttemplate.utils.ItemClickSupport;
-
-import java.util.ArrayList;
+import com.codepath.apps.restclienttemplate.fragments.HomeTimelineFragment;
+import com.codepath.apps.restclienttemplate.fragments.MentionsTimelineFragment;
+import com.codepath.apps.restclienttemplate.models.UserModel;
+import com.codepath.apps.restclienttemplate.utils.SharedPrefsHelper;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
-public class TimelineActivity extends AppCompatActivity implements ComposeTweetFragment.OnFragmentInteractionListener, ComposeTweetFragment.ITweetSubmit, TweetsArrayAdapter.ITweetActionListener {
+public class TimelineActivity extends AppCompatActivity {
 
-    private ArrayList<TweetModel> tweets;
-    private TweetsArrayAdapter aTweets;
-    @Bind(R.id.rvTimeline)
-    RecyclerView rvTimeline;
-
-    private ComposeTweetFragment composeTweetFragment;
+    @Bind(R.id.viewpager)
+    android.support.v4.view.ViewPager mViewPager;
+    @Bind(R.id.tabs)
+    PagerSlidingTabStrip mTabs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-//        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-//        setSupportActionBar(myToolbar);
-        android.support.v7.app.ActionBar myToolbar = getSupportActionBar();
-        myToolbar.setTitle("Activity Timeline");
         ButterKnife.bind(this);
-        setupModel();
-        setupAdapter();
-        setupRecyclerView();
-        populateTimeline(false);
-    }
-
-    private void setupModel() {
-        tweets = new ArrayList<>();
-    }
-
-    private void setupAdapter() {
-        aTweets = new TweetsArrayAdapter(getApplication(), tweets, this);
-    }
-
-    private void setupRecyclerView() {
-        rvTimeline.setAdapter(aTweets);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rvTimeline.setLayoutManager(layoutManager);
-        rvTimeline.setItemAnimator(new SlideInUpAnimator());
-        rvTimeline.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                populateTimeline(true);
-            }
-        });
-        ItemClickSupport.addTo(rvTimeline).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-
-            @Override
-            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-
-            }
-        });
-        rvTimeline.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
-    }
-
-    private void populateTimeline(boolean fetchFromLastTweet) {
-        TwitterService.getInstance().getHomeTimeline(fetchFromLastTweet, new TwitterService.IOnHomeTimelineReceived() {
-            @Override
-            public void onSuccess(ArrayList<TweetModel> tweetsList) {
-                tweets.addAll(tweetsList);
-                int curSize = aTweets.getItemCount();
-                aTweets.notifyItemRangeChanged(curSize, tweets.size() - 1);
-            }
-
-            @Override
-            public void onFailure(String error) {
-                Toast.makeText(getBaseContext(), error, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    public void launchComposeFragment(View v) {
-        composeTweetFragment = new ComposeTweetFragment();
-        composeTweetFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialogTheme);
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        composeTweetFragment.show(ft, "");
-    }
-
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
+        android.support.v7.app.ActionBar myToolbar = getSupportActionBar();
+        myToolbar.setBackgroundDrawable(getResources().getDrawable(R.color.divider));
+        myToolbar.setTitle("Activity Timeline");
+        setupViewPager();
     }
 
     @Override
-    public void onTweetSubmit(String tweet) {
-        composeTweetFragment.dismiss();
-        TwitterService.getInstance().postTweet(tweet, new TwitterService.IOnTweetPosted() {
-            @Override
-            public void onSuccess(TweetModel tweet) {
-                tweets.add(0, tweet);
-                aTweets.notifyItemInserted(0);
-                rvTimeline.scrollToPosition(0);
-                Toast.makeText(getBaseContext(), "Tweeted!", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(String error) {
-                Toast.makeText(getBaseContext(), error, Toast.LENGTH_SHORT).show();
-            }
-        });
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_timeline, menu);
+        return true;
     }
 
     @Override
-    public void retweet(final TweetModel tweetModel) {
-        TwitterService.getInstance().retweetTweet(tweetModel.getUid(), new TwitterService.IOnTweetRetweeted() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(getBaseContext(), "Retweeted!", Toast.LENGTH_SHORT).show();
-                tweetModel.setRetweeted(true);
-            }
-
-            @Override
-            public void onFailure(String error) {
-                Toast.makeText(getBaseContext(), error, Toast.LENGTH_SHORT).show();
-            }
-        });
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void reply(TweetModel tweetModel) {
-        composeTweetFragment = ComposeTweetFragment.newInstance(tweetModel.getUser().getScreenName(), tweetModel.getUid());
-        composeTweetFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialogTheme);
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        composeTweetFragment.show(ft, "");
+    private void setupViewPager() {
+        mViewPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager()));
+        mTabs.setViewPager(mViewPager);
     }
 
-    @Override
-    public void favorite(final TweetModel tweetModel) {
-        TwitterService.getInstance().favoriteTweet(tweetModel.getUid(), new TwitterService.IOnTweetFavorited() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(getBaseContext(), "Favorited!", Toast.LENGTH_SHORT).show();
-                tweetModel.setFavorited(true);
-            }
-
-            @Override
-            public void onFailure(String error) {
-                Toast.makeText(getBaseContext(), error, Toast.LENGTH_SHORT).show();
-            }
-        });
+    public void onProfileView(MenuItem mi) {
+        Intent i = new Intent(this, ProfileActivity.class);
+        UserModel user = SharedPrefsHelper.getCurrentUser(this);
+        i.putExtra(ProfileActivity.USER_HANDLE, user.getScreenName());
+        startActivity(i);
     }
 
-    @Override
-    public void unfavorite(final TweetModel tweetModel) {
-        TwitterService.getInstance().unfavoriteTweet(tweetModel.getUid(), new TwitterService.IOnTweetFavorited() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(getBaseContext(), "Unfavorited!", Toast.LENGTH_SHORT).show();
-                tweetModel.setFavorited(false);
-            }
+    public class TweetsPagerAdapter extends FragmentPagerAdapter {
+        final private String tabTitles[] = { "Home", "Mentions" };
 
-            @Override
-            public void onFailure(String error) {
-                Toast.makeText(getBaseContext(), error, Toast.LENGTH_SHORT).show();
+        private HomeTimelineFragment mHomeTimelineFragment;
+        private MentionsTimelineFragment mMentionsTimelineFragment;
+
+        public TweetsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            if (position == 0) {
+                return createHomeTimelineFragment();
+            } else if (position == 1) {
+                return createMentionsTimelineFragment();
             }
-        });
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            return tabTitles.length;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tabTitles[position];
+        }
+
+        private HomeTimelineFragment createHomeTimelineFragment() {
+            HomeTimelineFragment fragment = new HomeTimelineFragment();
+            return fragment;
+        }
+
+        private MentionsTimelineFragment createMentionsTimelineFragment() {
+            MentionsTimelineFragment fragment = new MentionsTimelineFragment();
+            return fragment;
+        }
     }
 }

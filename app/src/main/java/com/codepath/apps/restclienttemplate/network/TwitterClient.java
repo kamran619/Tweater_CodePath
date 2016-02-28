@@ -69,6 +69,55 @@ public class TwitterClient extends OAuthBaseClient {
 		return Utils.jsonToStringFromAssetFolder(context, "home_timeline.json");
 	}
 
+	public void getUserTimeline(long userId, long sinceId, AsyncHttpResponseHandler handler) {
+		if (isMocking) {
+			String mockedResponse = getMockedUserTimelineResponse();
+			try {
+				JSONArray jsonArray = new JSONArray(mockedResponse);
+				JsonHttpResponseHandler castedHandler = (JsonHttpResponseHandler) handler;
+				castedHandler.onSuccess(200, null, jsonArray);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
+		String apiUrl = getApiUrl("statuses/user_timeline.json");
+		RequestParams params = new RequestParams();
+		params.put("count", 100);
+		if (userId != 0) {
+			params.put("user_id", userId);
+		}
+		params.put("since_id", sinceId);
+		getClient().get(apiUrl, params, handler);
+	}
+
+	private String getMockedUserTimelineResponse() {
+		return Utils.jsonToStringFromAssetFolder(context, "user_timeline.json");
+	}
+
+	public void getMentionsTimeline(long fromLastId, AsyncHttpResponseHandler handler) {
+		if (isMocking) {
+			String mockedResponse = getMockedMentionsTimelineResponse();
+			try {
+				JSONArray jsonArray = new JSONArray(mockedResponse);
+				JsonHttpResponseHandler castedHandler = (JsonHttpResponseHandler) handler;
+				castedHandler.onSuccess(200, null, jsonArray);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
+		String apiUrl = getApiUrl("statuses/mentions_timeline.json");
+		RequestParams params = new RequestParams();
+		params.put("count", 25);
+		params.put("since_id", fromLastId);
+		getClient().get(apiUrl, params, handler);
+	}
+
+	private String getMockedMentionsTimelineResponse() {
+		return Utils.jsonToStringFromAssetFolder(context, "mentions_timeline.json");
+	}
+
 	public void postTweet(String body, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/update.json");
 		RequestParams params = new RequestParams();
@@ -97,6 +146,28 @@ public class TwitterClient extends OAuthBaseClient {
 		return Utils.jsonToStringFromAssetFolder(context, "current_user.json");
 	}
 
+	public void getUser(long userId, AsyncHttpResponseHandler handler) {
+		if (isMocking) {
+			String mockedResponse = getMockedUserResponse();
+			try {
+				JSONObject jsonObject = new JSONObject(mockedResponse);
+				JsonHttpResponseHandler castedHandler = (JsonHttpResponseHandler) handler;
+				castedHandler.onSuccess(200, null, jsonObject);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
+		String apiUrl = getApiUrl("users/show.json");
+		RequestParams params = new RequestParams();
+		params.put("user_id", userId);
+		getClient().get(apiUrl, params, handler);
+	}
+
+	private String getMockedUserResponse() {
+		return Utils.jsonToStringFromAssetFolder(context, "current_user.json");
+	}
+
 	public void favorite(long id, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("favorites/create.json");
 		RequestParams params = new RequestParams();
@@ -112,7 +183,7 @@ public class TwitterClient extends OAuthBaseClient {
 	}
 
 	public void retweet(long id, AsyncHttpResponseHandler handler) {
-		String url = "statuses/retweet/:" + id + ".json";
+		String url = "statuses/retweet/" + id + ".json";
 		String apiUrl = getApiUrl(url);
 		RequestParams params = new RequestParams();
 		params.put("id", id);

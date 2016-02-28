@@ -1,7 +1,6 @@
 package com.codepath.apps.restclienttemplate.fragments;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -23,6 +22,7 @@ import com.codepath.apps.restclienttemplate.utils.SharedPrefsHelper;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
 
@@ -34,11 +34,9 @@ import butterknife.OnTextChanged;
  * Use the {@link ComposeTweetFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ComposeTweetFragment extends DialogFragment {
+public class ComposeTweetFragment extends android.support.v4.app.DialogFragment {
 
     private final int MAX_CHARACTER_COUNT = 140;
-
-    private OnFragmentInteractionListener mListener;
 
     @Bind(R.id.etBody) EditText etBody;
     @Bind(R.id.tvRemaining) TextView tvRemaining;
@@ -46,7 +44,6 @@ public class ComposeTweetFragment extends DialogFragment {
     @Bind(R.id.tvComposeHandle) TextView tvHandle;
     @Bind(R.id.ivComposeAvatar) ImageView ivAvatar;
     @Bind(R.id.btnTweet) Button btnTweet;
-
     public ITweetSubmit onTweetSubmit;
 
     final static private String TWEET_MAX_LIMIT_ERROR = "The tweet has surpassed the character limit of 140";
@@ -62,7 +59,6 @@ public class ComposeTweetFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
     public static ComposeTweetFragment newInstance(String tweetTo, long tweetToId) {
         ComposeTweetFragment fragment = new ComposeTweetFragment();
         Bundle args = new Bundle();
@@ -93,6 +89,24 @@ public class ComposeTweetFragment extends DialogFragment {
     }
 
     private void initCallback() {
+        Fragment fragment = getParentFragment();
+        if (fragment != null) {
+            validateParentFragmentConformsToInterface();
+        } else {
+            validateParentActivityConformstoInterface();
+        }
+    }
+
+    private void validateParentFragmentConformsToInterface() {
+        Fragment fragment = getParentFragment();
+            if (fragment instanceof ITweetSubmit) {
+                onTweetSubmit = (ITweetSubmit) fragment;
+            } else {
+                throw new RuntimeException(fragment.toString() + " must implement ITweetSubmit");
+            }
+    }
+
+    private void validateParentActivityConformstoInterface() {
         Activity activity = getActivity();
         if (activity instanceof ITweetSubmit) {
             onTweetSubmit = (ITweetSubmit) activity;
@@ -148,45 +162,10 @@ public class ComposeTweetFragment extends DialogFragment {
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
         onTweetSubmit = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 
     @OnTextChanged(R.id.etBody)
